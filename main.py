@@ -27,7 +27,7 @@ player = Player()
 hostileMobs = pygame.sprite.Group()
 hostileMobs.add(mobs.Fighter)
 
-tmx_data = pytmx.util_pygame.load_pygame("test data/carte.tmx")
+tmx_data = pytmx.util_pygame.load_pygame("data/carte.tmx")
 map_data = pyscroll.data.TiledMapData(tmx_data)
 map_layer = pyscroll.orthographic.BufferedRenderer(map_data, screen.get_size())
 
