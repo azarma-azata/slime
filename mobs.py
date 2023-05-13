@@ -30,4 +30,4 @@ class hostileMob(pygame.sprite.Sprite):
             else:
                 self.isPlayerFounded = False
 
-Fighter = hostileMob(1,10,"data/deep_elf_fighter_new.png",gameItems.weapons["sword"],150)
+Fighter = hostileMob(1,10,"data/images/deep_elf_fighter_new.png",gameItems.weapons["sword"],150)
