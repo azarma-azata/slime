@@ -16,7 +16,6 @@ class pauseMenu():
 
         self.buttons = [pygame.Rect(screenSize[0]//2-150, screenSize[1]//2+((k-2)*60)-15, 300, 30) for k in range(5)]
         self.text = tuple(texts[self.gameLanguage][0:6])
-        print(self.text)
     
     def update(self, screen, police):
         s=pygame.Surface(screen.get_size())
@@ -44,5 +43,3 @@ class pauseMenu():
     class languageMenu():
         def __init__(self):
             pass
-
-pauseMenu((0,0))

@@ -1,0 +1,4 @@
+up;26
+down;22
+left;4
+right;7
