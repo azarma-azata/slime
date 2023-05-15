@@ -131,8 +131,6 @@ while doContinue:
     group.draw(screen)
     drawAll()
     if gamePaused: gameMenu.update(screen, police)
-    a=police.render((str(round(gameClock.get_fps()))+" FPS"), 0, (0,0,0))
-    screen.blit(a, (screen.get_width()-20-a.get_width(),20))
     pygame.display.flip()
 
 pygame.quit()
