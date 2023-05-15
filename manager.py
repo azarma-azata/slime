@@ -13,3 +13,4 @@ def getTexts():
             a=k.rstrip().split(";")
             dico[a[0]] = a[1:]
     return dico
+

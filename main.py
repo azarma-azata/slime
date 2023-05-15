@@ -6,7 +6,8 @@ import pytmx, pyscroll
 import manager, mobs, gameItems, menu
 from player import Player
 
-userName = "Slime"
+buttonActions = []
+username = "Slime"
 gamePaused = False
 pressedKeys = {}
 
@@ -44,28 +45,6 @@ collisions = []
 for obj in tmx_data.get_layer_by_name("Collisions"):
     collisions.append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
 
-"""def pausedMenu():
-    s=pygame.Surface(screen.get_size())
-    s.set_alpha(100)
-    s.fill((0,0,0))
-    screen.blit(s, (0,0))
-
-    temp=("Video settings", "Audio settings", "Language", "Credits", "Resume")
-    for k in range(len(temp)):
-        a=screen.get_size()[0]//2
-        b=100+k*60
-
-        pygame.draw.rect(screen, (180,180,180), (a-150, b, 300, 30))
-        pygame.draw.rect(screen, (0,0,0), (a-150, b, 300, 30), 2)
-        texte = police.render(temp[k], 0, (0,0,0))
-        screen.blit(texte, (a-texte.get_size()[0]//2, b+8))
-
-    for event in pygame.events.get(): 
-        if event.type == MOUSEBUTTONUP:
-            pass"""
-
-
-
 def groupReset():
     group2 = pyscroll.PyscrollGroup(map_layer=map_layer, default_layer=1)
     for k in group:
@@ -80,7 +59,7 @@ def barre_vie(x,y):
     pygame.draw.circle(screen,(0,0,0),(x-55,y+5),30)
     screen.blit(icon, (x-70,y-10))
 
-    #a = police.render(userName, 0, (255,255,255))
+    #a = police.render(username, 0, (255,255,255))
     #screen.blit(a, (x-25, y+15))
 
 def update():
@@ -101,6 +80,11 @@ def drawAll():
     barre_vie(100,50)
     pass
 
+def fpausedMenu(menuId):
+    global gamePaused
+    print(menuId)
+    if menuId == 4: gamePaused = False
+
 doContinue = True
 while doContinue:
     gameClock.tick(60)
@@ -113,24 +97,32 @@ while doContinue:
             gameMenu = menu.pauseMenu(screen.get_size())
         
         if event.type == KEYDOWN:
-            pressedKeys[event.dict["scancode"]] = True
+            pressedKeys[event.dict["key"]] = True
         if event.type == KEYUP:
             if event.key == K_ESCAPE:
-                gamePaused = not gamePaused
+                if not gamePaused: gamePaused = True
+                #elif gameMenu.activeMenu == None: gamePaused = False
             
-            pressedKeys[event.dict["scancode"]] = False
+            #pressedKeys[event.dict["scancode"]] = False
+            del pressedKeys[event.dict["key"]]
             if event.key == K_i:
                 player.inv.changeCurrentItem(gameItems.weapons["long-sword"], player.inv.inv)
                 group.add(player.inv.currentItem)
                 group.add(hostileMobs.weapon)
                 player.pv -= 1
+        if event.type == MOUSEBUTTONUP:
+            if gamePaused:
+                gameMenu.gettingClicked(pygame.mouse.get_pos())
     
     if not gamePaused: update()
 
     group.center(player.rect)
     group.draw(screen)
     drawAll()
-    if gamePaused: gameMenu.update(screen, police)
+    if gamePaused:
+        print(gameMenu.update(screen, police))
+        if gameMenu.update(screen, police):
+            fpausedMenu(gameMenu.update(screen, police))
     pygame.display.flip()
 
 pygame.quit()
