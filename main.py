@@ -54,6 +54,7 @@ def groupReset():
 def barre_vie(x,y):
     icon = pygame.image.load("data/images/player.png")
     pygame.draw.rect(screen,(0,0,0),[x-55,y-7,116,20])
+    pygame.draw.rect(screen,(50,0,0),[x-25,y-5,84,16])
     pygame.draw.rect(screen,(200,0,0),[x-25,y-5,84*(player.pv/player.maxPv),16])
     pygame.draw.polygon(screen,(0,0,0),((x+60,y-5),(x+60,y+10) ,(x+35,y+10), (x+55,y-5)))
     pygame.draw.circle(screen,(0,0,0),(x-55,y+5),30)
