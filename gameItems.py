@@ -14,6 +14,7 @@ class weapon(pygame.sprite.Sprite):
 
 
 weapons = {
-    "sword" : weapon("rusty sword", 2,10,1,"sword.png", 4),
-    "long-sword" : weapon("Basic long sword",5, 25, 6, "long-sword.png", 5)
+    "dague" : weapon("Dague", 1,38,1,"dague.png", 2),
+    "sword" : weapon("Basic sword",2, 43, 3, "sword.png", 4),
+    "long-sword" : weapon("Basic long sword",4, 53, 5, "long-sword.png", 7)
 }

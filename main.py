@@ -54,7 +54,6 @@ def groupReset():
 def barre_vie(x,y):
     icon = pygame.image.load("data/images/player.png")
     pygame.draw.rect(screen,(0,0,0),[x-55,y-7,116,20])
-    pygame.draw.rect(screen,(50,0,0),[x-25,y-5,84,16])
     pygame.draw.rect(screen,(200,0,0),[x-25,y-5,84*(player.pv/player.maxPv),16])
     pygame.draw.polygon(screen,(0,0,0),((x+60,y-5),(x+60,y+10) ,(x+35,y+10), (x+55,y-5)))
     pygame.draw.circle(screen,(0,0,0),(x-55,y+5),30)
@@ -64,8 +63,7 @@ def barre_vie(x,y):
     #screen.blit(a, (x-25, y+15))
 
 def update():
-    a=hostileMobs.update(player.rect)
-    player.update(collisions+[a])
+    player.update(collisions, hostileMobs)
     player.inv.update(player.rect)
     keyEventsManager(pressedKeys)
 
@@ -83,8 +81,7 @@ def drawAll():
 
 def fpausedMenu(menuId):
     global gamePaused
-    print(menuId)
-    if menuId == 4: gamePaused = False
+    if menuId == 5: gamePaused = False
 
 doContinue = True
 while doContinue:
@@ -121,9 +118,9 @@ while doContinue:
     group.draw(screen)
     drawAll()
     if gamePaused:
-        print(gameMenu.update(screen, police))
-        if gameMenu.update(screen, police):
-            fpausedMenu(gameMenu.update(screen, police))
+        #print(gameMenu.update(screen, police))
+        a=gameMenu.update(screen, police)
+        if a: fpausedMenu(a)
     pygame.display.flip()
 
 pygame.quit()
