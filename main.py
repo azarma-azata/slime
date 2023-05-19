@@ -95,6 +95,7 @@ while doContinue:
             gameMenu = menu.pauseMenu(screen.get_size())
         
         if event.type == KEYDOWN:
+            #print(event.dict["key"])
             pressedKeys[event.dict["key"]] = True
         if event.type == KEYUP:
             if event.key == K_ESCAPE:
@@ -104,7 +105,7 @@ while doContinue:
             #pressedKeys[event.dict["scancode"]] = False
             del pressedKeys[event.dict["key"]]
             if event.key == K_i:
-                player.inv.changeCurrentItem(gameItems.weapons["long-sword"], player.inv.inv)
+                player.inv.changeCurrentItem(gameItems.weapons["sword"], player.inv.inv)
                 group.add(player.inv.currentItem)
                 group.add(hostileMobs.weapon)
                 player.pv -= 1

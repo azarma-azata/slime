@@ -23,11 +23,7 @@ class Player(pygame.sprite.Sprite):
         if self.inv.currentItem:
         #for k in hostileMobs:
             a=m.sqrt((self.rect.center[0]-hostileMobs.rect.center[0])**2 + (self.rect.center[1]-hostileMobs.rect.center[1])**2)
-            print(a)
-            if a<self.inv.currentItem.atkRange:
-                print("detekted")
-            else:
-                print("not detekted")
+            if a<self.inv.currentItem.atkRange:print("")
                 
         
 
