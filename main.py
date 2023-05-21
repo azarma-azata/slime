@@ -55,16 +55,12 @@ def groupReset():
     return group2
 
 def barre_vie(x,y):
-
     a=8
-
     pygame.draw.rect(screen, (0,0,0), (x-11, y-11, 93, 23))
     pygame.draw.rect(screen, (255,0,0), (x+2, y-a, 76*(player.pv/player.maxPv), 2*a))
     pygame.draw.polygon(screen, (215,200,140), ((x,y), (x,y+10), (x+80, y+10), (x+80,y-10), (x, y-10), (x,y), (x+2, y), (x+2, y-a), (x+80-2, y-a), (x+80-2*a, y+a), (x+2, y+a), (x+2, y)))
     pygame.draw.circle(screen, (0,0,0),(x-30, y),30)
     screen.blit(player.image, (x-45,y-15))
-
-    pygame.draw.circle(screen, (255,255,0), (x,y), 1)
 
     """icon = pygame.image.load("data/images/player.png")
     pygame.draw.rect(screen,(0,0,0),[x-55,y-7,116,20])
@@ -79,7 +75,7 @@ def barre_vie(x,y):
 def update():
     a=hostileMobs.update(collisions, player.rect)
     if a: player.pv-=a
-    player.update(collisions, hostileMobs)
+    player.update(collisions, hostileMobs, screen)
     player.inv.update(player.rect)
     keyEventsManager(pressedKeys)
 
@@ -92,6 +88,8 @@ def keyEventsManager(events):
     return
 
 def drawAll():
+    group.center(player.rect)
+    group.draw(screen)
     barre_vie(80,50)
     pass
 
@@ -118,7 +116,7 @@ while doContinue:
             if event.key == K_ESCAPE:
                 if not gamePaused: gamePaused = True
             if event.key == K_i:
-                player.pv -= 1
+                player.pv -= 5
         
         if event.type == MOUSEBUTTONUP:
             if gamePaused:
@@ -126,9 +124,7 @@ while doContinue:
     
     if not gamePaused: update()
 
-    group.center(player.rect)
-    group.draw(screen)
-    drawAll()
+    if not player.isDead: drawAll()
     if gamePaused:
         #print(gameMenu.update(screen, police))
         a=gameMenu.update(screen, police)
