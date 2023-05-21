@@ -21,7 +21,6 @@ police = pygame.font.Font("data/fonts/alagard.ttf", 20)
 
 player = Player()
 hostileMobs = mobs.Fighter
-group.add(hostileMobs.weapon)
 #hostileMobs = pygame.sprite.Group()
 #hostileMobs.add(mobs.Fighter)
 gameMenu = menu.pauseMenu(screen.get_size())
@@ -33,6 +32,7 @@ map_layer = pyscroll.orthographic.BufferedRenderer(map_data, screen.get_size())
 group = pyscroll.PyscrollGroup(map_layer=map_layer, default_layer=0)
 group.add(player)
 group.add(hostileMobs)
+group.add(hostileMobs.weapon)
 
 spawnPoint = tmx_data.get_object_by_name("spawnPoint")
 player.rect.x = spawnPoint.x
