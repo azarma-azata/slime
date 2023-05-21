@@ -9,6 +9,7 @@ class weapon(pygame.sprite.Sprite):
         self.atkRange = atkRange
         self.cost = price
         self.image = pygame.image.load("data/items/"+imgPath)
+        self.initialImage = self.image
         self.rect = self.image.get_rect()
         self.weight = weight
         self.cooldown = cooldown
@@ -21,17 +22,16 @@ class weapon(pygame.sprite.Sprite):
     def update(self):
         if self.isAttacking:
             self.currentPos+=1
-            self.image = pygame.transform.rotate(self.image, 10)
+            self.image = pygame.transform.rotate(self.initialImage, -20*self.currentPos)
         
         if self.currentPos == 10:
             self.currentPos = 0
             self.isAttacking = False
             self.isRecharging = True
-            self.image = self.initalImage
-            self.initalImage = None
 
         if self.isRecharging:
             self.currentCooldown +=1
+            if self.currentCooldown<=10: self.image = pygame.transform.rotate(self.initialImage, -10*(10-self.currentCooldown))
         
         if self.currentCooldown == self.cooldown:
             self.isRecharging = False
@@ -39,7 +39,6 @@ class weapon(pygame.sprite.Sprite):
     
     def attack(self):
         self.isAttacking = True
-        self.initalImage = self.image
 
 
 weapons = {
