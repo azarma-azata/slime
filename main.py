@@ -33,6 +33,7 @@ group = pyscroll.PyscrollGroup(map_layer=map_layer, default_layer=0)
 group.add(player)
 group.add(hostileMobs)
 group.add(hostileMobs.weapon)
+group.add(player.inv.currentItem)
 
 spawnPoint = tmx_data.get_object_by_name("spawnPoint")
 player.rect.x = spawnPoint.x
@@ -100,16 +101,13 @@ while doContinue:
         if event.type == KEYDOWN:
             pressedKeys[event.dict["scancode"]] = True
         if event.type == KEYUP:
+            del pressedKeys[event.dict["scancode"]]
+            
             if event.key == K_ESCAPE:
                 if not gamePaused: gamePaused = True
-                #elif gameMenu.activeMenu == None: gamePaused = False
-            
-            #pressedKeys[event.dict["scancode"]] = False
-            del pressedKeys[event.dict["scancode"]]
             if event.key == K_i:
-                player.inv.changeCurrentItem(gameItems.weapons["long-sword"], player.inv.inv)
-                group.add(player.inv.currentItem)
                 player.pv -= 1
+        
         if event.type == MOUSEBUTTONUP:
             if gamePaused:
                 gameMenu.gettingClicked(pygame.mouse.get_pos())

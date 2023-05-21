@@ -1,5 +1,7 @@
 import pygame
 import math as m
+
+import gameItems
 from inventory import Inventory
 
 class Player(pygame.sprite.Sprite):
@@ -14,6 +16,7 @@ class Player(pygame.sprite.Sprite):
         self.pv = self.maxPv
         self.speed = 3
         self.inv = Inventory()
+        self.inv.changeCurrentItem(gameItems.weapons["long-sword"], self.inv.inv)
     
     def update(self, collisions, hostileMobs):
         self.collisions = collisions
