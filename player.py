@@ -1,5 +1,7 @@
 import pygame
 import math as m
+
+import gameItems
 from inventory import Inventory
 
 class Player(pygame.sprite.Sprite):
@@ -14,16 +16,21 @@ class Player(pygame.sprite.Sprite):
         self.pv = self.maxPv
         self.speed = 3
         self.inv = Inventory()
+        self.inv.changeCurrentItem(gameItems.weapons["long-sword"], self.inv.inv)
     
     def update(self, collisions, hostileMobs):
         self.collisions = collisions
         self.feet = pygame.Rect(self.rect.midbottom+(0,0))
         if self.pv == 0:
             self.died()
-        if self.inv.currentItem:
+        """if self.inv.currentItem:
         #for k in hostileMobs:
             a=m.sqrt((self.rect.center[0]-hostileMobs.rect.center[0])**2 + (self.rect.center[1]-hostileMobs.rect.center[1])**2)
-            if a<self.inv.currentItem.atkRange:print("")
+            print(a)
+            if a<self.inv.currentItem.atkRange:
+                print("detekted")
+            else:
+                print("not detekted")"""
                 
         
 

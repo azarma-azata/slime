@@ -1,4 +1,4 @@
-up;122
-down;115
-left;113
-right;100
+up;26
+down;22
+left;4
+right;7

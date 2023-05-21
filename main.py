@@ -29,9 +29,11 @@ tmx_data = pytmx.util_pygame.load_pygame("data/tilemaps/carte.tmx")
 map_data = pyscroll.data.TiledMapData(tmx_data)
 map_layer = pyscroll.orthographic.BufferedRenderer(map_data, screen.get_size())
 
-group = pyscroll.PyscrollGroup(map_layer=map_layer, default_layer=1)
+group = pyscroll.PyscrollGroup(map_layer=map_layer, default_layer=0)
 group.add(player)
 group.add(hostileMobs)
+group.add(hostileMobs.weapon)
+group.add(player.inv.currentItem)
 
 spawnPoint = tmx_data.get_object_by_name("spawnPoint")
 player.rect.x = spawnPoint.x
@@ -63,6 +65,8 @@ def barre_vie(x,y):
     #screen.blit(a, (x-25, y+15))
 
 def update():
+    a=hostileMobs.update(collisions, player.rect)
+    if a: player.pv-=a
     player.update(collisions, hostileMobs)
     player.inv.update(player.rect)
     keyEventsManager(pressedKeys)
@@ -95,20 +99,15 @@ while doContinue:
             gameMenu = menu.pauseMenu(screen.get_size())
         
         if event.type == KEYDOWN:
-            #print(event.dict["key"])
-            pressedKeys[event.dict["key"]] = True
+            pressedKeys[event.dict["scancode"]] = True
         if event.type == KEYUP:
+            del pressedKeys[event.dict["scancode"]]
+            
             if event.key == K_ESCAPE:
                 if not gamePaused: gamePaused = True
-                #elif gameMenu.activeMenu == None: gamePaused = False
-            
-            #pressedKeys[event.dict["scancode"]] = False
-            del pressedKeys[event.dict["key"]]
             if event.key == K_i:
-                player.inv.changeCurrentItem(gameItems.weapons["sword"], player.inv.inv)
-                group.add(player.inv.currentItem)
-                group.add(hostileMobs.weapon)
                 player.pv -= 1
+        
         if event.type == MOUSEBUTTONUP:
             if gamePaused:
                 gameMenu.gettingClicked(pygame.mouse.get_pos())
