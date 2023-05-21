@@ -51,15 +51,27 @@ def groupReset():
     group2 = pyscroll.PyscrollGroup(map_layer=map_layer, default_layer=1)
     for k in group:
         group2.add(k)
+    map_layer.zoom = screen.get_width()/800
     return group2
 
 def barre_vie(x,y):
-    icon = pygame.image.load("data/images/player.png")
+
+    a=8
+
+    pygame.draw.rect(screen, (0,0,0), (x-11, y-11, 93, 23))
+    pygame.draw.rect(screen, (255,0,0), (x+2, y-a, 76*(player.pv/player.maxPv), 2*a))
+    pygame.draw.polygon(screen, (215,200,140), ((x,y), (x,y+10), (x+80, y+10), (x+80,y-10), (x, y-10), (x,y), (x+2, y), (x+2, y-a), (x+80-2, y-a), (x+80-2*a, y+a), (x+2, y+a), (x+2, y)))
+    pygame.draw.circle(screen, (0,0,0),(x-30, y),30)
+    screen.blit(player.image, (x-45,y-15))
+
+    pygame.draw.circle(screen, (255,255,0), (x,y), 1)
+
+    """icon = pygame.image.load("data/images/player.png")
     pygame.draw.rect(screen,(0,0,0),[x-55,y-7,116,20])
     pygame.draw.rect(screen,(200,0,0),[x-25,y-5,84*(player.pv/player.maxPv),16])
     pygame.draw.polygon(screen,(0,0,0),((x+60,y-5),(x+60,y+10) ,(x+35,y+10), (x+55,y-5)))
     pygame.draw.circle(screen,(0,0,0),(x-55,y+5),30)
-    screen.blit(icon, (x-70,y-10))
+    screen.blit(icon, (x-70,y-10))"""
 
     #a = police.render(username, 0, (255,255,255))
     #screen.blit(a, (x-25, y+15))
@@ -80,7 +92,7 @@ def keyEventsManager(events):
     return
 
 def drawAll():
-    barre_vie(100,50)
+    barre_vie(80,50)
     pass
 
 def fpausedMenu(menuId):
