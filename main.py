@@ -12,17 +12,18 @@ gamePaused = False
 pressedKeys = {}
 
 pygame.init()
-pygame.mixer.init()
-sounds = {"oof":pygame.mixer.Sound("data/sounds/oof.ogg")}
+sounds = {"oof":pygame.mixer.Sound("data/sounds/oof.wav")}
+for key in sounds.keys(): sounds[key].set_volume(0.01)
 pygame.mixer.init()
 gameClock = pygame.time.Clock()
 screen = pygame.display.set_mode((800,450), RESIZABLE)
 pygame.display.set_caption('Slime')
 pygame.display.set_icon(pygame.image.load("data/images/player.png"))
 
-music = {"rush E": pygame.mixer.Sound("data/sounds/rush_E.ogg")}
+music = {"rush E": pygame.mixer.Sound("data/sounds/rush_E.wav"), "bombjack": pygame.mixer.Sound("data/sounds/bombjack.wav")}
 musicChannel = pygame.mixer.Channel(1)
-musicChannel.play(music["rush E"])
+musicChannel.set_volume(0.01)
+musicChannel.play(music["bombjack"])
 
 police = pygame.font.Font("data/fonts/alagard.ttf", 20)
 
@@ -83,7 +84,7 @@ def update():
     a=hostileMobs.update(collisions, player.rect)
     if a:
         player.pv-=a
-        #sounds["oof"].play()
+        sounds["oof"].play()
     player.update(collisions, hostileMobs, screen)
     player.inv.update(player.rect)
     keyEventsManager(pressedKeys)
