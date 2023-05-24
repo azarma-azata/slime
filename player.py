@@ -15,7 +15,9 @@ class Player(pygame.sprite.Sprite):
         self.maxPv = 20
         self.pv = self.maxPv
         self.speed = 3
+        self.detectRange=300
         self.isDead = False
+        self.target = None
         self.inv = Inventory()
         self.inv.changeCurrentItem(gameItems.weapons["long-sword"], self.inv.inv)
         self.i = 0
@@ -25,16 +27,14 @@ class Player(pygame.sprite.Sprite):
         self.feet = pygame.Rect(self.rect.midbottom+(0,0))
         if self.pv <= 0: self.isDead = True
         if self.isDead: self.died(screen)
-        """if self.inv.currentItem:
-        #for k in hostileMobs:
-            a=m.sqrt((self.rect.center[0]-hostileMobs.rect.center[0])**2 + (self.rect.center[1]-hostileMobs.rect.center[1])**2)
-            print(a)
-            if a<self.inv.currentItem.atkRange:
-                print("detekted")
-            else:
-                print("not detekted")"""
-                
         
+        a=m.sqrt(abs((self.rect.center[0]-hostileMobs.rect.center[0])**2)+abs((self.rect.center[1]-hostileMobs.rect.center[1])**2))
+        if a< self.detectRange:   
+            self.target = hostileMobs
+        self.updateWeapon()
+    
+    def updateWeapon(self):
+        pass
 
     def up(self):
         if pygame.Rect(self.rect.x, self.rect.y-self.speed, self.rect.width, self.rect.height).collidelist(self.collisions) ==-1: self.rect.y-=self.speed
@@ -52,7 +52,7 @@ class Player(pygame.sprite.Sprite):
         a=pygame.image.load("data/images/uDied.png")
         b=((screen.get_size()[0]//2-a.get_size()[0]//2), (screen.get_size()[1]//2-a.get_size()[1]//2))
         screen2 = pygame.Surface(screen.get_size())
-        screen2.set_alpha(255*(self.i/600))
+        screen2.set_alpha(255*(self.i/150))
         screen2.blit(a, b)
         screen.blit(screen2, (0,0))
-        if self.i <= 600: self.i += 1
+        if self.i <= 150: self.i += 1

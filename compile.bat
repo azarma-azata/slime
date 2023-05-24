@@ -1,1 +1,2 @@
-python setup.py compile
+python setup.py build
+pause

@@ -12,10 +12,17 @@ gamePaused = False
 pressedKeys = {}
 
 pygame.init()
+pygame.mixer.init()
+sounds = {"oof":pygame.mixer.Sound("data/sounds/oof.ogg")}
+pygame.mixer.init()
 gameClock = pygame.time.Clock()
 screen = pygame.display.set_mode((800,450), RESIZABLE)
 pygame.display.set_caption('Slime')
 pygame.display.set_icon(pygame.image.load("data/images/player.png"))
+
+music = {"rush E": pygame.mixer.Sound("data/sounds/rush_E.ogg")}
+musicChannel = pygame.mixer.Channel(1)
+musicChannel.play(music["rush E"])
 
 police = pygame.font.Font("data/fonts/alagard.ttf", 20)
 
@@ -74,7 +81,9 @@ def barre_vie(x,y):
 
 def update():
     a=hostileMobs.update(collisions, player.rect)
-    if a: player.pv-=a
+    if a:
+        player.pv-=a
+        #sounds["oof"].play()
     player.update(collisions, hostileMobs, screen)
     player.inv.update(player.rect)
     keyEventsManager(pressedKeys)
@@ -126,7 +135,6 @@ while doContinue:
 
     if not player.isDead: drawAll()
     if gamePaused:
-        #print(gameMenu.update(screen, police))
         a=gameMenu.update(screen, police)
         if a: fpausedMenu(a)
     pygame.display.flip()

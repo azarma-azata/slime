@@ -1,6 +1,9 @@
 from cx_Freeze import setup, Executable
 
-build_exe_options = {"include_files":["data"]}
+build_exe_options = {
+    "include_files":["data"],
+    "optimize":2
+}
 
 # On appelle la fonction setup
 setup(
