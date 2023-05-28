@@ -32,7 +32,7 @@ class hostileMob(pygame.sprite.Sprite):
         if self.playerDistance and self.playerDistance < self.detectRange:
             if self.rect.x-playerRect.x > 0: self.isReversed = True
             elif self.rect.x-playerRect.x < 0: self.isReversed = False
-            a=self.move(playerRect)
+            #a=self.move(playerRect)
         if b!= self.isReversed: self.reverse()
         
         return a

@@ -21,11 +21,14 @@ class weapon(pygame.sprite.Sprite):
         self.currentPos = 0
         self.currentCooldown = 0
 
-    def update(self, newRect):
+    def update(self, newRect, rotation=0):
         
         self.rect.x = newRect.x
         self.rect.y = newRect.y
         
+        self.initialImage2 = self.initialImage
+        self.image = pygame.transform.rotate(self.initialImage, rotation)
+
         if self.isAttacking:
             self.currentPos+=1
             if not self.isReversed: self.image = pygame.transform.rotate(self.initialImage, -20*self.currentPos)

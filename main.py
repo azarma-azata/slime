@@ -10,19 +10,21 @@ buttonActions = []
 username = "Slime"
 gamePaused = False
 pressedKeys = {}
+pressedKeys2 = {}
 
 pygame.init()
 sounds = {"oof":pygame.mixer.Sound("data/sounds/oof.wav")}
-for key in sounds.keys(): sounds[key].set_volume(0.01)
+for key in sounds.keys(): sounds[key].set_volume(0.001)
 pygame.mixer.init()
 gameClock = pygame.time.Clock()
-screen = pygame.display.set_mode((800,450), RESIZABLE)
+#screen = pygame.display.set_mode((800,450), RESIZABLE)
+screen = pygame.display.set_mode((1080,720), RESIZABLE)
 pygame.display.set_caption('Slime')
 pygame.display.set_icon(pygame.image.load("data/images/player.png"))
 
 music = {"rush E": pygame.mixer.Sound("data/sounds/rush_E.wav"), "bombjack": pygame.mixer.Sound("data/sounds/bombjack.wav")}
 musicChannel = pygame.mixer.Channel(1)
-musicChannel.set_volume(0.01)
+musicChannel.set_volume(0.001)
 musicChannel.play(music["bombjack"])
 
 police = pygame.font.Font("data/fonts/alagard.ttf", 20)
@@ -36,6 +38,7 @@ gameMenu = menu.pauseMenu(screen.get_size())
 tmx_data = pytmx.util_pygame.load_pygame("data/tilemaps/carte.tmx")
 map_data = pyscroll.data.TiledMapData(tmx_data)
 map_layer = pyscroll.orthographic.BufferedRenderer(map_data, screen.get_size())
+map_layer.zoom = screen.get_width()/800
 
 group = pyscroll.PyscrollGroup(map_layer=map_layer, default_layer=0)
 group.add(player)
@@ -55,6 +58,14 @@ collisions = []
 for obj in tmx_data.get_layer_by_name("Collisions"):
     collisions.append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
 
+def update():
+    a=hostileMobs.update(collisions, player.rect)
+    if a:
+        player.pv-=a
+        sounds["oof"].play()
+    player.update(collisions, hostileMobs, screen)
+    keyEventsManager(pressedKeys)
+
 def groupReset():
     group2 = pyscroll.PyscrollGroup(map_layer=map_layer, default_layer=1)
     for k in group:
@@ -62,7 +73,7 @@ def groupReset():
     map_layer.zoom = screen.get_width()/800
     return group2
 
-def barre_vie(x,y):
+def healthBar(x,y):
     a=8
     pygame.draw.rect(screen, (0,0,0), (x-11, y-11, 93, 23))
     pygame.draw.rect(screen, (255,0,0), (x+2, y-a, 76*(player.pv/player.maxPv), 2*a))
@@ -70,38 +81,29 @@ def barre_vie(x,y):
     pygame.draw.circle(screen, (0,0,0),(x-30, y),30)
     screen.blit(player.image, (x-45,y-15))
 
-    """icon = pygame.image.load("data/images/player.png")
-    pygame.draw.rect(screen,(0,0,0),[x-55,y-7,116,20])
-    pygame.draw.rect(screen,(200,0,0),[x-25,y-5,84*(player.pv/player.maxPv),16])
-    pygame.draw.polygon(screen,(0,0,0),((x+60,y-5),(x+60,y+10) ,(x+35,y+10), (x+55,y-5)))
-    pygame.draw.circle(screen,(0,0,0),(x-55,y+5),30)
-    screen.blit(icon, (x-70,y-10))"""
-
-    #a = police.render(username, 0, (255,255,255))
-    #screen.blit(a, (x-25, y+15))
-
-def update():
-    a=hostileMobs.update(collisions, player.rect)
-    if a:
-        player.pv-=a
-        sounds["oof"].play()
-    player.update(collisions, hostileMobs, screen)
-    player.inv.update(player.rect)
-    keyEventsManager(pressedKeys)
-
 def keyEventsManager(events):
-    toDo = {"up":player.up, "down":player.down, "left":player.left, "right":player.right}
+    global pressedKeys2
+    toDo = {"up":player.up, "down":player.down, "left":player.left, "right":player.right, "inventory":player.inv.openInv}
     dico=manager.getKeys()
     for key, active in pressedKeys.items():
-        if not active: continue
-        if key in dico.keys(): toDo[dico[key]]()
+        #if not active: continue
+        a=False
+        for k,n in dico.items():
+            if n[1]==key: a=k
+        if not a: continue
+        if dico[a][0]==1 or (dico[a][0]==0 and (not key in pressedKeys2.keys())):
+            toDo[a]()
+    pressedKeys2 = pressedKeys.copy()
+
     return
 
 def drawAll():
     group.center(player.rect)
     group.draw(screen)
-    barre_vie(80,50)
-    pass
+    healthBar(80,50)
+    #pygame.draw.line(screen, (255,0,0), player.rect.center, player.target.rect.center)
+    player.inv.update(screen)
+
 
 def fpausedMenu(menuId):
     global gamePaused
@@ -118,12 +120,15 @@ while doContinue:
             group = groupReset()
             gameMenu = menu.pauseMenu(screen.get_size())
         
+        #print(event)
         if event.type == KEYDOWN:
             pressedKeys[event.dict["scancode"]] = True
         if event.type == KEYUP:
+            #print(event.dict)
+            
             del pressedKeys[event.dict["scancode"]]
             
-            if event.key == K_ESCAPE:
+            if event.scancode == 41:
                 if not gamePaused: gamePaused = True
             if event.key == K_i:
                 player.pv -= 5
@@ -139,5 +144,6 @@ while doContinue:
         a=gameMenu.update(screen, police)
         if a: fpausedMenu(a)
     pygame.display.flip()
+
 
 pygame.quit()

@@ -25,15 +25,24 @@ class Player(pygame.sprite.Sprite):
     def update(self, collisions, hostileMobs, screen):
         self.collisions = collisions
         self.feet = pygame.Rect(self.rect.midbottom+(0,0))
-        if self.pv <= 0: self.isDead = True
+        #if self.pv <= 0: self.isDead = True
         if self.isDead: self.died(screen)
         
         a=m.sqrt(abs((self.rect.center[0]-hostileMobs.rect.center[0])**2)+abs((self.rect.center[1]-hostileMobs.rect.center[1])**2))
-        if a< self.detectRange:   
+        if a<self.detectRange:
             self.target = hostileMobs
         self.updateWeapon()
     
     def updateWeapon(self):
+        a=0
+        if self.rect.center[0]-self.target.rect.center[0] != 0: 
+            a=m.atan((self.target.rect.center[1]-self.rect.center[1])/(self.rect.center[0]-self.target.rect.center[0]))
+        
+        b=self.rect.copy()
+        b.x += b.width
+        b.y += b.height-10
+
+        self.inv.currentItem.update(b, abs(a*180))
         pass
 
     def up(self):
