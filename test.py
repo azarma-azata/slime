@@ -10,6 +10,7 @@ a=pygame.image.load("data/items/sword.png")
 image=pygame.transform.scale(a, (200,200))
 i=0
 meh=False
+size = 1
 
 def trigo(a):
     b = m.sqrt(250**2-(a**2))
@@ -35,6 +36,8 @@ while continuer:
                 trigo(int(input("x ? : ")))
             if event.key == K_3:
                 meh = True
+            if event.key == K_4:
+                size+=1
 
 
     if meh:
@@ -48,6 +51,7 @@ while continuer:
         meh=False
         i=0
 
+    pygame.draw.rect(screen, (255,255,0), (100,100,100,100), size)
     pygame.display.flip()
 
 pygame.quit()

@@ -15,6 +15,7 @@ class weapon(pygame.sprite.Sprite):
         self.weight = weight
         self.cooldown = cooldown
         self.isReversed = False
+        self.invNumber = None
 
         self.isAttacking = False
         self.isRecharging = False
@@ -62,5 +63,6 @@ weapons = {
     "dague" : weapon("Dague", "", 1,38,1,"dague.png", 2, 60),
     "sword" : weapon("Basic sword", "", 2, 43, 3, "sword.png", 4, 85),
     "long-sword" : weapon("Basic long sword", "", 4, 53, 5, "long-sword.png", 7, 100),
-    "40m-sword" : weapon("Bruh", "", 19, 530, 999, "40m-sword.png", 100, 300)
+    "40m-sword" : weapon("Bruh", "", 19, 530, 999, "40m-sword.png", 100, 300),
+    "fire-wand" : weapon("fire wand", "", 0, 100, 20, "fire-wand.png", 1, 90)
 }

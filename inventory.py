@@ -7,22 +7,95 @@ class Inventory(pygame.sprite.Sprite):
         self.inv = pygame.sprite.Group()
         self.currentItem = None
         self.isOpen = False
+        self.selectedItem = None
+        self.case = 78
+        self.interCase = self.case//8
 
-    def update(self, screen):
-        if self.isOpen: self.drawSelf(screen)
+        self.dropped = pygame.sprite.Group()
 
-    def drawSelf(self, screen):
+    def update(self, screen, mousePos):
+        self.fcases(screen)
+        if self.isOpen: self.drawSelf(screen, mousePos)
+
+    def gettingClicked(self, screen, mousePos, playerRect, group):
+        a=pygame.Rect(mousePos+(1,1))
+        c=a.collidelist(self.cases)
+        print(a)
+        print(self.cases)
+        if c >-1:
+            c+=1
+            if not self.selectedItem:
+                for i in self.inv: 
+                    if i.invNumber == c: self.selectedItem = i
+                    self.inv.remove(i)
+            else:
+                self.selectedItem.invNumber = c
+                self.inv.add(self.selectedItem)
+                self.selectedItem = None
+        elif self.selectedItem:
+            self.selectedItem.invNumber = None
+            self.selectedItem.rect.bottomright = playerRect.bottomleft
+            self.dropped.add(self.selectedItem)
+            group.add(self.dropped)
+            self.selectedItem = None
+
+
+        """for n in range(2):
+            for k in range(5):
+                if self.cases[k+n*5].collidepoint(mousePos):
+                    c=k+1+n*5
+                    if not self.selectedItem:
+                        for i in self.inv: 
+                            if i.invNumber == c: self.selectedItem = i
+                            self.inv.remove(i)
+                    else:
+                        self.selectedItem.invNumber = c
+                        self.inv.add(self.selectedItem)
+                        self.selectedItem = None
+
+                
+                elif self.selectedItem:
+                    self.selectedItem.invNumber = None
+                    self.selectedItem.rect.bottomright = playerRect.bottomleft
+                    self.dropped.add(self.selectedItem)
+                    group.add(self.dropped)
+                    self.selectedItem = None"""
+
+        print(c)
+
+    def drawSelf(self, screen, mousePos):
+
         a=screen.get_size()
-        b=(a[0]//2-32*5-3*6, a[1]//2-32*2-3*3)
-        pygame.draw.rect(screen, (127,127,127), b+(64*5+3*6, 64*2+3*3))
+        b=((a[0]-self.case*5-self.interCase*6)//2, (a[1]-self.case*2-self.interCase*3)//2)
+        pygame.draw.rect(screen, (127,127,127), b+(self.case*5+self.interCase*6, self.case*2+self.interCase*3))
         for n in range(2):
             for k in range(5):
-                pygame.draw.rect(screen, (0,0,0), (b[0]+68*k+3,b[1]+68*n+3,64,64), 5)
+                pygame.draw.rect(screen, (0,0,0), self.cases[k+n*5], 3)
+                for i in self.inv:
+                    if i.invNumber == k+1+n*5:
+                        temp = pygame.transform.scale(i.image, (64,64))
+                        screen.blit(temp, [m+7 for m in self.cases[k+n*5]])
+        
+        if self.selectedItem:
+            temp = pygame.transform.scale(self.selectedItem.image, (64,64))
+            screen.blit(temp, mousePos)
+
+
+    def fcases(self, screen):
+        a=screen.get_size()
+        b=((a[0]-self.case*5-self.interCase*6)//2, (a[1]-self.case*2-self.interCase*3)//2)
+
+        self.cases = []
+        for k in range(5):
+            for n in range(2):
+                l=(b[0]+self.case*k+self.interCase*(k+1), b[1]+self.case*n+self.interCase*(n+1))
+                self.cases.append(pygame.Rect(l, tuple([self.case]*2)))
 
     def openInv(self):
         self.isOpen = not self.isOpen
 
-    def addItem(self, item):
+    def addItem(self, item, place):
+        item.invNumber = place
         self.inv.add(item)
     
     def changeCurrentItem(self, item, destination):

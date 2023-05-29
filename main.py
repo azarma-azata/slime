@@ -51,8 +51,7 @@ player.rect.x = spawnPoint.x
 player.rect.y = spawnPoint.y
 
 fighter_spawnPoint = tmx_data.get_object_by_name("fighter_spawnPoint")
-hostileMobs.rect.x = fighter_spawnPoint.x
-hostileMobs.rect.y = fighter_spawnPoint.y
+hostileMobs.setSpawnPoint((fighter_spawnPoint.x, fighter_spawnPoint.y))
 
 collisions = []
 for obj in tmx_data.get_layer_by_name("Collisions"):
@@ -70,7 +69,11 @@ def groupReset():
     group2 = pyscroll.PyscrollGroup(map_layer=map_layer, default_layer=1)
     for k in group:
         group2.add(k)
-    map_layer.zoom = screen.get_width()/800
+    a = screen.get_width()/800
+    b = screen.get_height()/400
+    if a<b: map_layer.zoom = a
+    else: map_layer.zoom = b
+
     return group2
 
 def healthBar(x,y):
@@ -102,13 +105,14 @@ def drawAll():
     group.draw(screen)
     healthBar(80,50)
     #pygame.draw.line(screen, (255,0,0), player.rect.center, player.target.rect.center)
-    player.inv.update(screen)
+    player.inv.update(screen, pygame.mouse.get_pos())
 
 
 def fpausedMenu(menuId):
     global gamePaused
     if menuId == 5: gamePaused = False
 
+groupReset()
 doContinue = True
 while doContinue:
     gameClock.tick(60)
@@ -132,10 +136,13 @@ while doContinue:
                 if not gamePaused: gamePaused = True
             if event.key == K_i:
                 player.pv -= 5
+                player.inv.addItem(gameItems.weapons["fire-wand"], 1)
         
         if event.type == MOUSEBUTTONUP:
             if gamePaused:
                 gameMenu.gettingClicked(pygame.mouse.get_pos())
+            if player.inv.isOpen:
+                player.inv.gettingClicked(screen, pygame.mouse.get_pos(), player.rect, group)
     
     if not gamePaused: update()
 
