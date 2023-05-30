@@ -38,7 +38,9 @@ class pauseMenu():
         
         return False
 
-    def gettingClicked(self, coos):
+    def gettingClicked(self):
+        coos=pygame.mouse.get_pos()
+
         for k in self.buttons:
             if k.rect.collidepoint(coos):
                 k.gotClicked()

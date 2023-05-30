@@ -31,12 +31,13 @@ class Player(pygame.sprite.Sprite):
         a=m.sqrt(abs((self.rect.center[0]-hostileMobs.rect.center[0])**2)+abs((self.rect.center[1]-hostileMobs.rect.center[1])**2))
         if a<self.detectRange:
             self.target = hostileMobs
-        if self.target: self.updateWeapon()
+        self.updateWeapon()
     
     def updateWeapon(self):
         a=0
-        if self.rect.center[0]-self.target.rect.center[0] != 0: 
-            a=m.atan((self.target.rect.center[1]-self.rect.center[1])/(self.rect.center[0]-self.target.rect.center[0]))
+        if self.target:
+            if self.rect.center[0]-self.target.rect.center[0] != 0: 
+                a=m.atan((self.target.rect.center[1]-self.rect.center[1])/(self.rect.center[0]-self.target.rect.center[0]))
         
         b=self.rect.copy()
         b.x += b.width

@@ -86,7 +86,7 @@ def healthBar(x,y):
 
 def keyEventsManager(events):
     global pressedKeys2
-    toDo = {"up":player.up, "down":player.down, "left":player.left, "right":player.right, "inventory":player.inv.openInv}
+    toDo = {"up":player.up, "down":player.down, "left":player.left, "right":player.right, "inventory":player.inv.openInv, "pickUp":player.inv.pickUp}
     dico=manager.getKeys()
     for key, active in pressedKeys.items():
         #if not active: continue
@@ -105,7 +105,11 @@ def drawAll():
     group.draw(screen)
     healthBar(80,50)
     #pygame.draw.line(screen, (255,0,0), player.rect.center, player.target.rect.center)
-    player.inv.update(screen, pygame.mouse.get_pos())
+    player.inv.update(screen)
+    if player.inv.changed:
+        group.add(player.inv.dropped)
+        player.inv.changed = False
+    for k in player.inv.dropped: print(k.rect)
 
 
 def fpausedMenu(menuId):
@@ -115,7 +119,7 @@ def fpausedMenu(menuId):
 groupReset()
 doContinue = True
 while doContinue:
-    gameClock.tick(60)
+    gameClock.tick(10)
     for event in pygame.event.get():
         if event.type == QUIT:
             doContinue = False
@@ -140,9 +144,9 @@ while doContinue:
         
         if event.type == MOUSEBUTTONUP:
             if gamePaused:
-                gameMenu.gettingClicked(pygame.mouse.get_pos())
+                gameMenu.gettingClicked()
             if player.inv.isOpen:
-                player.inv.gettingClicked(screen, pygame.mouse.get_pos(), player.rect, group)
+                player.inv.gettingClicked(screen, player.rect)
     
     if not gamePaused: update()
 

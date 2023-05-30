@@ -12,16 +12,16 @@ class Inventory(pygame.sprite.Sprite):
         self.interCase = self.case//8
 
         self.dropped = pygame.sprite.Group()
+        self.changed = False
 
-    def update(self, screen, mousePos):
+    def update(self, screen):
         self.fcases(screen)
-        if self.isOpen: self.drawSelf(screen, mousePos)
+        if self.isOpen: self.drawSelf(screen)
 
-    def gettingClicked(self, screen, mousePos, playerRect, group):
+    def gettingClicked(self, screen, playerRect):
+        mousePos=pygame.mouse.get_pos()
         a=pygame.Rect(mousePos+(1,1))
         c=a.collidelist(self.cases)
-        print(a)
-        print(self.cases)
         if c >-1:
             c+=1
             if not self.selectedItem:
@@ -36,34 +36,11 @@ class Inventory(pygame.sprite.Sprite):
             self.selectedItem.invNumber = None
             self.selectedItem.rect.bottomright = playerRect.bottomleft
             self.dropped.add(self.selectedItem)
-            group.add(self.dropped)
+            self.changed = True
             self.selectedItem = None
 
-
-        """for n in range(2):
-            for k in range(5):
-                if self.cases[k+n*5].collidepoint(mousePos):
-                    c=k+1+n*5
-                    if not self.selectedItem:
-                        for i in self.inv: 
-                            if i.invNumber == c: self.selectedItem = i
-                            self.inv.remove(i)
-                    else:
-                        self.selectedItem.invNumber = c
-                        self.inv.add(self.selectedItem)
-                        self.selectedItem = None
-
-                
-                elif self.selectedItem:
-                    self.selectedItem.invNumber = None
-                    self.selectedItem.rect.bottomright = playerRect.bottomleft
-                    self.dropped.add(self.selectedItem)
-                    group.add(self.dropped)
-                    self.selectedItem = None"""
-
-        print(c)
-
-    def drawSelf(self, screen, mousePos):
+    def drawSelf(self, screen):
+        mousePos=pygame.mouse.get_pos()
 
         a=screen.get_size()
         b=((a[0]-self.case*5-self.interCase*6)//2, (a[1]-self.case*2-self.interCase*3)//2)
@@ -80,6 +57,14 @@ class Inventory(pygame.sprite.Sprite):
             temp = pygame.transform.scale(self.selectedItem.image, (64,64))
             screen.blit(temp, mousePos)
 
+    def pickUp(self):
+        a=pygame.mouse.get_pos()
+        for k in self.dropped:
+            if k.rect.collidepoint(a):
+                self.isOpen = True
+                self.selectedItem = k
+                self.dropped.remove(k)
+                self.changed = True
 
     def fcases(self, screen):
         a=screen.get_size()

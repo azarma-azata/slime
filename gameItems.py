@@ -45,6 +45,9 @@ class weapon(pygame.sprite.Sprite):
             if self.currentCooldown<=10:
                 if not self.isReversed: self.image = pygame.transform.rotate(self.initialImage, -10*(10-self.currentCooldown))
                 else: self.image = pygame.transform.rotate(self.initialImage, 10*(10-self.currentCooldown))
+            """else:
+                if not self.isReversed: self.initialImage = pygame.transform.rotate(self.initialImage, -10*(10-self.currentCooldown))
+                else: self.initialImage = pygame.transform.rotate(self.initialImage, 10*(10-self.currentCooldown))"""
         
         if self.currentCooldown == self.cooldown:
             self.isRecharging = False
@@ -54,8 +57,7 @@ class weapon(pygame.sprite.Sprite):
         self.isAttacking = True
 
     def reverse(self):
-        self.image = pygame.transform.flip(self.image, True, False)
-        self.initialImage = self.image
+        self.initialImage = pygame.transform.flip(self.initialImage, True, False)
         self.isReversed = not self.isReversed
     
     
