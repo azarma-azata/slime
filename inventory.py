@@ -62,8 +62,8 @@ class Inventory(pygame.sprite.Sprite):
         for k in self.dropped:
             if k.rect.collidepoint(a):
                 self.isOpen = True
-                self.selectedItem = k
                 self.dropped.remove(k)
+                self.selectedItem = k
                 self.changed = True
 
     def fcases(self, screen):
@@ -71,8 +71,8 @@ class Inventory(pygame.sprite.Sprite):
         b=((a[0]-self.case*5-self.interCase*6)//2, (a[1]-self.case*2-self.interCase*3)//2)
 
         self.cases = []
-        for k in range(5):
-            for n in range(2):
+        for n in range(2):
+            for k in range(5):
                 l=(b[0]+self.case*k+self.interCase*(k+1), b[1]+self.case*n+self.interCase*(n+1))
                 self.cases.append(pygame.Rect(l, tuple([self.case]*2)))
 
@@ -80,8 +80,9 @@ class Inventory(pygame.sprite.Sprite):
         self.isOpen = not self.isOpen
 
     def addItem(self, item, place):
-        item.invNumber = place
-        self.inv.add(item)
+        a=item
+        a.invNumber = place
+        self.inv.add(a)
     
     def changeCurrentItem(self, item, destination):
         if self.currentItem != None: destination.add(self.currentItem)

@@ -1,6 +1,7 @@
 import pygame, time
 from pygame.locals import *
 import math as m
+import mobs
 
 pygame.init()
 screen = pygame.display.set_mode((600,600))
@@ -11,6 +12,7 @@ image=pygame.transform.scale(a, (200,200))
 i=0
 meh=False
 size = 1
+group=pygame.sprite.Group()
 
 def trigo(a):
     b = m.sqrt(250**2-(a**2))
@@ -21,6 +23,7 @@ pygame.draw.circle(screen, (255,0,0), (300,300), 250, 1)
 
 continuer = True
 while continuer:
+    screen.fill((255,255,255))
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             continuer = False
@@ -38,8 +41,12 @@ while continuer:
                 meh = True
             if event.key == K_4:
                 size+=1
+            if event.key == K_5:
+                group.add(mobs.Fighter)
+            if event.key == K_6:
+                group.remove(mobs.Fighter)
 
-
+    print(group)
     if meh:
         b=pygame.transform.rotate(image, 10*i)
         screen.blit(b, (200,200))
@@ -51,6 +58,8 @@ while continuer:
         meh=False
         i=0
 
+    
+    group.draw(screen)
     pygame.draw.rect(screen, (255,255,0), (100,100,100,100), size)
     pygame.display.flip()
 

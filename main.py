@@ -89,7 +89,7 @@ def keyEventsManager(events):
     toDo = {"up":player.up, "down":player.down, "left":player.left, "right":player.right, "inventory":player.inv.openInv, "pickUp":player.inv.pickUp}
     dico=manager.getKeys()
     for key, active in pressedKeys.items():
-        #if not active: continue
+        #if not active: continued 
         a=False
         for k,n in dico.items():
             if n[1]==key: a=k
@@ -101,6 +101,7 @@ def keyEventsManager(events):
     return
 
 def drawAll():
+    screen.fill((255,255,255))
     group.center(player.rect)
     group.draw(screen)
     healthBar(80,50)
@@ -109,17 +110,23 @@ def drawAll():
     if player.inv.changed:
         group.add(player.inv.dropped)
         player.inv.changed = False
-    for k in player.inv.dropped: print(k.rect)
-
+        print("changed")
+    
+    #print([(a,a.groups()) for a in player.inv.inv], [a for a in player.inv.dropped], player.inv.selectedItem)
 
 def fpausedMenu(menuId):
     global gamePaused
-    if menuId == 5: gamePaused = False
+    if menuId == 5: 
+        gamePaused = False
+        m=gameMenu.activeMenu = None
+        gameMenu.i = 0
+    else: 
+        gameMenu.activeMenu = gameMenu.menus[menuId]
 
 groupReset()
 doContinue = True
 while doContinue:
-    gameClock.tick(10)
+    gameClock.tick(60)
     for event in pygame.event.get():
         if event.type == QUIT:
             doContinue = False
@@ -130,17 +137,19 @@ while doContinue:
         
         #print(event)
         if event.type == KEYDOWN:
-            pressedKeys[event.dict["scancode"]] = True
+            pressedKeys[event.dict["key"]] = True
         if event.type == KEYUP:
             #print(event.dict)
             
-            del pressedKeys[event.dict["scancode"]]
+            del pressedKeys[event.dict["key"]]
             
             if event.scancode == 41:
                 if not gamePaused: gamePaused = True
             if event.key == K_i:
                 player.pv -= 5
                 player.inv.addItem(gameItems.weapons["fire-wand"], 1)
+            if event.key == K_j:
+                player.inv.addItem(gameItems.weapons["fire-wand"], 2)
         
         if event.type == MOUSEBUTTONUP:
             if gamePaused:

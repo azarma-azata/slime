@@ -28,6 +28,8 @@ class hostileMob(pygame.sprite.Sprite):
 
         self.playerDistance = self.detection(playerRect)
         self.collisions = collisions
+
+        #l=m.sqrt(abs((self.rect.center[0]-self.spawnPoint[0])**2)+abs((self.rect.center[1]-self.spawnPoint[1])**2))
         
         a=0
         b=self.isReversed
