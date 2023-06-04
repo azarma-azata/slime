@@ -1,4 +1,4 @@
-import pygame, time
+"""import pygame, time
 from pygame.locals import *
 import math as m
 import mobs
@@ -63,4 +63,20 @@ while continuer:
     pygame.draw.rect(screen, (255,255,0), (100,100,100,100), size)
     pygame.display.flip()
 
-pygame.quit()
+pygame.quit()"""
+
+with open("test.csv", "r", encoding="utf-8") as file:
+    a=[k.rstrip().split(";") for k in file.readlines()]
+print(a)
+
+with open("test.csv", "w+", encoding="utf-8") as file:
+    a[2][2]='152'
+    print(a)
+    for k in a:
+        for n in k:
+            file.write(n+";")
+        file.write("\n")
+
+with open("test.csv", "r", encoding="utf-8") as file:
+    a=[k.rstrip().split(";") for k in file.readlines()]
+print(a)

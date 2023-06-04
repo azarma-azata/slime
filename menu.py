@@ -8,6 +8,7 @@ class pauseMenu():
         #self.creditsMenu = fcredits()
         
         self.activeMenu = None
+        self.status = None
         
         #settings
         self.gameLanguage = "fr"
@@ -15,7 +16,7 @@ class pauseMenu():
         self.text = tuple(texts[self.gameLanguage][0:7])
         self.buttonsRect = [pygame.Rect(screenSize[0]//2-150, screenSize[1]//2+((k-2)*60)-15, 300, 30) for k in range(len(self.text))]
         self.buttons = [Button(self.text[k], (180,180,180), self.buttonsRect[k], k) for k in range(len(self.text))]
-
+        
         self.idToReturn = None
 
         self.i = 0
@@ -27,6 +28,7 @@ class pauseMenu():
             for k in self.buttons:
                 if k.rect.collidepoint(coos):
                     k.gotClicked()
+        else: pass
     
     
     def videoSettingsMenu(self, screen):
@@ -36,6 +38,20 @@ class pauseMenu():
         pass
 
     def keySettingsMenu(self, screen, police):
+
+        def changeKey(self, key):
+            print(key)
+
+            with open("test.csv", "r", encoding="utf-8") as file:
+                n=[k.rstrip().split(";") for k in file.readlines()]
+            with open("test.csv", "w+", encoding="utf-8") as file:
+                n[self.buttonToChange.id][2] = str(key)
+                for k in n:
+                    for i in k:
+                        file.write(n[k][i])
+                        if i!=2: file.write(";")
+                    file.write("\n")
+
         a=manager.getKeys()
         b=manager.getTexts()[self.gameLanguage]
 
@@ -51,13 +67,17 @@ class pauseMenu():
 
         i=0
         for k in self.menuButtons:
-            k.update(screen, police)
+            if k.update(screen, police):
+                self.status="waiting"
+                self.buttonToChange = k
             pygame.draw.rect(screen, (0,0,0), (screen.get_width()//2-270, k.rect.y, 500, 30))
             pygame.draw.rect(screen, (180,180,180), (screen.get_width()//2-270+2, k.rect.y+2, 500-4, 30-4))
             temp = police.render(texts[i], 0, (0,0,0))
             screen.blit(temp, (screen.get_width()//2-250, k.rect.centery-temp.get_height()//2))
             i+=1
     
+
+
     def creditsMenu(self, screen):
         pass
 

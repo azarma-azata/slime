@@ -58,7 +58,8 @@ for obj in tmx_data.get_layer_by_name("Collisions"):
     collisions.append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
 
 def update():
-    a=hostileMobs.update(collisions, player.rect)
+    a=0
+    #a=hostileMobs.update(collisions, player.rect)
     if a:
         player.pv-=a
         sounds["oof"].play()
@@ -95,6 +96,8 @@ def keyEventsManager(events):
             if n[1]==key: a=k
         if not a: continue
         if dico[a][0]==1 or (dico[a][0]==0 and (not key in pressedKeys2.keys())):
+            #if (player.inv.status == "waiting" and player.inv.activeMenu == 3): player.inv.keySettings.changeKey(key)
+            #else: 
             toDo[a]()
     pressedKeys2 = pressedKeys.copy()
 

@@ -38,12 +38,17 @@ class Player(pygame.sprite.Sprite):
         if self.target:
             if self.rect.center[0]-self.target.rect.center[0] != 0: 
                 a=m.atan((self.target.rect.center[1]-self.rect.center[1])/(self.rect.center[0]-self.target.rect.center[0]))
-        
-        b=self.rect.copy()
-        b.x += b.width
-        b.y += b.height-10
+                if a<=0: a=m.pi+a
+                if (self.target.rect.center[1]-self.rect.center[1])<0: a=m.pi+a
 
-        self.inv.currentItem.update(b, abs(a*180))
+        print(a*(180/m.pi))
+        b=self.rect.copy()
+
+        b.x+=(b.width)*m.cos(a)
+        b.y+=(b.height-10)*m.sin(a)
+
+        self.inv.currentItem.update(b, -a*(180/m.pi))
+        #self.inv.currentItem.update(b, a)
         pass
 
     def up(self):
