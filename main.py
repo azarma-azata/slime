@@ -3,7 +3,7 @@ from pygame.locals import *
 import math as m
 import pytmx, pyscroll
 
-import manager, mobs, gameItems, menu
+import manager, mobs, gameItems, menu, maps
 from player import Player
 
 buttonActions = []
@@ -17,8 +17,7 @@ sounds = {"oof":pygame.mixer.Sound("data/sounds/oof.wav")}
 for key in sounds.keys(): sounds[key].set_volume(0.001)
 pygame.mixer.init()
 gameClock = pygame.time.Clock()
-#screen = pygame.display.set_mode((800,450), RESIZABLE)
-screen = pygame.display.set_mode((1080,720), RESIZABLE)
+screen = pygame.display.set_mode((1280,720), RESIZABLE)
 pygame.display.set_caption('Slime')
 pygame.display.set_icon(pygame.image.load("data/images/player.png"))
 
@@ -29,40 +28,53 @@ musicChannel.play(music["bombjack"])
 
 police = pygame.font.Font("data/fonts/alagard.ttf", 20)
 
+group=None
+tmx_data=None
+map_data=None
+map_layer=None
+collisions=None
+hostileMobs=None
+hostileMobsItems=None
+
 player = Player()
-hostileMobs = mobs.Fighter
-#hostileMobs = pygame.sprite.Group()
-#hostileMobs.add(mobs.Fighter)
 gameMenu = menu.pauseMenu(screen.get_size())
 
-tmx_data = pytmx.util_pygame.load_pygame("data/tilemaps/carte.tmx")
-map_data = pyscroll.data.TiledMapData(tmx_data)
-map_layer = pyscroll.orthographic.BufferedRenderer(map_data, screen.get_size())
-map_layer.zoom = screen.get_width()/800
 
-group = pyscroll.PyscrollGroup(map_layer=map_layer, default_layer=0)
-group.add(player)
-group.add(hostileMobs)
-group.add(hostileMobs.weapon)
-group.add(player.inv.currentItem)
 
-spawnPoint = tmx_data.get_object_by_name("spawnPoint")
-player.rect.x = spawnPoint.x
-player.rect.y = spawnPoint.y
+def loadMap(map):
+    global group, player, tmx_data, map_data, map_layer, collisions, hostileMobs, hostileMobsItems
+    map = maps.Map(map)
+    tmx_data=map.tmx_data
+    map_data=map.map_data
+    map_layer=map.map_layer
 
-fighter_spawnPoint = tmx_data.get_object_by_name("fighter_spawnPoint")
-hostileMobs.setSpawnPoint((fighter_spawnPoint.x, fighter_spawnPoint.y))
+    collisions=map.collisions
 
-collisions = []
-for obj in tmx_data.get_layer_by_name("Collisions"):
-    collisions.append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
+    player.rect.x=map.playerSpawnpoint.x
+    player.rect.y=map.playerSpawnpoint.y
+
+    hostileMobs=map.hostileMobs
+    hostileMobsItems=map.hostileMobsItems
+
+    group = pyscroll.PyscrollGroup(map_layer=map_layer, default_layer=0)
+    group.add(player)
+    group.add(player.inv.currentItem)
+    group.add(hostileMobs)
+    group.add(hostileMobsItems)
+
+    groupReset()
 
 def update():
-    a=0
-    #a=hostileMobs.update(collisions, player.rect)
-    if a:
-        player.pv-=a
-        sounds["oof"].play()
+    hostileMobs.update(collisions, player)
+    """for k in hostileMobs:
+        if k.isDead: 
+            hostileMobs.remove(k)
+            hostileMobsItems=pygame.sprite.Group()
+            for k in hostileMobs: hostileMobsItems.add(k.weapon)
+            group.add(hostileMobs)
+            group.add(hostileMobsItems)
+            groupReset()"""
+
     player.update(collisions, hostileMobs, screen)
     keyEventsManager(pressedKeys)
 
@@ -70,9 +82,10 @@ def groupReset():
     group2 = pyscroll.PyscrollGroup(map_layer=map_layer, default_layer=1)
     for k in group:
         group2.add(k)
-    a = screen.get_width()/800
-    b = screen.get_height()/400
-    if a<b: map_layer.zoom = a
+        print(k)
+    a = screen.get_width()/854
+    b = screen.get_height()/480
+    if a>b: map_layer.zoom = a
     else: map_layer.zoom = b
 
     return group2
@@ -111,7 +124,8 @@ def drawAll():
     #pygame.draw.line(screen, (255,0,0), player.rect.center, player.target.rect.center)
     player.inv.update(screen)
     if player.inv.changed:
-        group.add(player.inv.dropped)
+        #group.add(player.inv.dropped)
+        groupReset()
         player.inv.changed = False
         print("changed")
     
@@ -126,7 +140,7 @@ def fpausedMenu(menuId):
     else: 
         gameMenu.activeMenu = gameMenu.menus[menuId]
 
-groupReset()
+loadMap("carte")
 doContinue = True
 while doContinue:
     gameClock.tick(60)

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.1" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="32" tileheight="32" infinite="0" nextlayerid="6" nextobjectid="111">
+<map version="1.10" tiledversion="1.10.1" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="32" tileheight="32" infinite="0" nextlayerid="6" nextobjectid="115">
  <tileset firstgid="1" source="nature.tsx"/>
- <layer id="1" name="map" width="50" height="50">
+ <layer id="1" name="background" width="50" height="50">
   <data encoding="csv">
 44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,
 44,41,41,41,41,41,41,41,41,88,42,42,42,42,42,42,42,42,42,42,42,42,42,42,42,42,42,42,42,42,42,42,42,42,42,42,42,42,42,42,42,42,42,42,42,42,86,41,41,44,
@@ -158,11 +158,23 @@
   <object id="110" x="585" y="713" width="13.996" height="17"/>
  </objectgroup>
  <objectgroup id="4" name="Points">
-  <object id="15" name="spawnPoint" x="224" y="160">
-   <point/>
+  <object id="77" template="spawnPoint.tx" name="" x="448" y="448">
+   <properties>
+    <property name="mobName" value="fighter"/>
+    <property name="mobType" value="hostileMob"/>
+   </properties>
   </object>
-  <object id="77" name="fighter_spawnPoint" x="448" y="448">
-   <point/>
+  <object id="114" template="spawnPoint.tx" name="" x="608" y="448">
+   <properties>
+    <property name="mobName" value="assassin"/>
+    <property name="mobType" value="hostileMob"/>
+   </properties>
+  </object>
+  <object id="113" template="spawnPoint.tx" name="" x="224" y="128">
+   <properties>
+    <property name="mobName" value="player"/>
+    <property name="mobType" value="player"/>
+   </properties>
   </object>
  </objectgroup>
 </map>

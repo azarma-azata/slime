@@ -5,6 +5,7 @@ class Inventory(pygame.sprite.Sprite):
         super().__init__()
         
         self.inv = pygame.sprite.Group()
+        self.currentMoney = 0
         self.currentItem = None
         self.isOpen = False
         self.selectedItem = None

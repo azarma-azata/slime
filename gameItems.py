@@ -1,10 +1,11 @@
 import pygame
 
 class weapon(pygame.sprite.Sprite):
-    def __init__(self, name, description, atk, atkRange, price, imgPath, weight, cooldown):
+    def __init__(self, name, ptype, description, atk, atkRange, price, imgPath, weight, cooldown):
         super().__init__()
 
         self.name = name
+        self.type=ptype
         self.description = description
         self.damage = atk
         self.atkRange = atkRange
@@ -12,6 +13,9 @@ class weapon(pygame.sprite.Sprite):
         self.image = pygame.image.load("data/items/"+imgPath)
         self.initialImage = self.image
         self.rect = self.image.get_rect()
+        if self.type=="cac": self.attackRect = pygame.Rect(0,0,0,self.rect.height*2)
+        if self.type=="distance": pass
+        self.activeAttackRect = pygame.Rect
         self.weight = weight
         self.cooldown = cooldown
         self.isReversed = False
@@ -27,7 +31,9 @@ class weapon(pygame.sprite.Sprite):
         self.rect.x = newRect.x
         self.rect.y = newRect.y
         
-        self.initialImage2 = self.initialImage
+        self.activeAttackRect=self.rect.copy()
+        for k in range(4): self.activeAttackRect[k]+=self.attackRect[k]
+
         self.image = pygame.transform.rotate(self.initialImage, rotation)
 
         if self.isAttacking:
@@ -62,9 +68,9 @@ class weapon(pygame.sprite.Sprite):
     
     
 weapons = {
-    "dague" : weapon("Dague", "", 1,38,1,"dague.png", 2, 60),
-    "sword" : weapon("Basic sword", "", 2, 43, 3, "sword.png", 4, 85),
-    "long-sword" : weapon("Basic long sword", "", 4, 53, 5, "long-sword.png", 7, 100),
-    "40m-sword" : weapon("Bruh", "", 19, 530, 999, "40m-sword.png", 100, 300),
-    "fire-wand" : weapon("fire wand", "", 0, 100, 20, "fire-wand.png", 1, 90)
+    "dagger" : weapon("Dague", "cac","", 1,38,1,"dague.png", 2, 60),
+    "sword" : weapon("Basic sword", "cac","", 2, 43, 3, "sword.png", 4, 85),
+    "long-sword" : weapon("Basic long sword", "cac","", 4, 53, 5, "long-sword.png", 7, 100),
+    "40m-sword" : weapon("Bruh", "cac","", 19, 530, 999, "40m-sword.png", 100, 300),
+    "fire-wand" : weapon("fire wand", "distance","", 0, 100, 20, "fire-wand.png", 1, 90)
 }

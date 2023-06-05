@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template>
+ <object>
+  <properties>
+   <property name="mobName" value=""/>
+   <property name="mobType" value=""/>
+  </properties>
+  <point/>
+ </object>
+</template>

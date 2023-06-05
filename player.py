@@ -15,7 +15,7 @@ class Player(pygame.sprite.Sprite):
         self.maxPv = 20
         self.pv = self.maxPv
         self.speed = 3
-        self.detectRange=300
+        self.detectRange=400
         self.isDead = False
         self.target = None
         self.inv = Inventory()
@@ -28,27 +28,50 @@ class Player(pygame.sprite.Sprite):
         #if self.pv <= 0: self.isDead = True
         if self.isDead: self.died(screen)
         
-        a=m.sqrt(abs((self.rect.center[0]-hostileMobs.rect.center[0])**2)+abs((self.rect.center[1]-hostileMobs.rect.center[1])**2))
-        if a<self.detectRange:
-            self.target = hostileMobs
+        for k in hostileMobs:
+            a=m.sqrt(abs((self.rect.center[0]-k.rect.center[0])**2)+abs((self.rect.center[1]-k.rect.center[1])**2))
+            if a<self.detectRange:
+                if k.isDead:
+                    self.target=None
+                    continue
+                if not self.target or self.target.distance>a: self.target = k
+                self.target.distance=a
+            else: self.target=None
         self.updateWeapon()
+
+        if self.target: self.attack(hostileMobs)
+        else: self.inv.currentItem.update(pygame.Rect(self.rect.x+self.rect.width, self.rect.y+self.rect.height-10,0,0))
     
+    def attack(self, hostileMobs):
+        if self.inv.currentItem.rect.colliderect(self.target.rect):
+            if (self.inv.currentItem.isRecharging or self.inv.currentItem.isAttacking): return
+            self.inv.currentItem.attack()
+            for k in hostileMobs:
+                if self.inv.currentItem.activeAttackRect.colliderect(k.rect):
+                    k.pv-=self.inv.currentItem.damage
+
     def updateWeapon(self):
         a=0
+        c=-1
         if self.target:
             if self.rect.center[0]-self.target.rect.center[0] != 0: 
                 a=m.atan((self.target.rect.center[1]-self.rect.center[1])/(self.rect.center[0]-self.target.rect.center[0]))
-                if a<=0: a=m.pi+a
-                if (self.target.rect.center[1]-self.rect.center[1])<0: a=m.pi+a
 
-        print(a*(180/m.pi))
+            if (self.rect.center[0]-self.target.rect.center[0])<=0: 
+                c=1
+
+            if (self.inv.currentItem.isReversed and (self.rect.center[0]-self.target.rect.center[0])>0) or (not self.inv.currentItem.isReversed and (self.rect.center[0]-self.target.rect.center[0])<0): self.inv.currentItem.reverse()
+
+        a=-a
         b=self.rect.copy()
 
-        b.x+=(b.width)*m.cos(a)
-        b.y+=(b.height-10)*m.sin(a)
+        b.x+=(b.width)*m.cos(a)*c
+        b.y+=(b.height-10)*m.sin(a)*c
 
-        self.inv.currentItem.update(b, -a*(180/m.pi))
+        a=a*(180/m.pi)
+        self.inv.currentItem.update(b, -a-90*c)
         #self.inv.currentItem.update(b, a)
+
         pass
 
     def up(self):

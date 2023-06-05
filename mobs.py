@@ -4,7 +4,7 @@ import math as m
 import gameItems
 
 class hostileMob(pygame.sprite.Sprite):
-    def __init__(self, atk, pvs, speed, imgPath, weapon, detectRange):
+    def __init__(self, atk, pvs, speed, imgPath, weapon, detectRange, deathWorth):
         super().__init__()
 
         self.atk = atk
@@ -14,36 +14,39 @@ class hostileMob(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.weapon = weapon
         self.detectRange = detectRange
+        self.deathWorth = deathWorth
         self.spawnPoint = (0,0)
         self.playerDistance = int
         #self.relativeCoos, self.centerCoos = (0,0), (0,0)
         self.tag = "hostileMob"
         self.isReversed = True
         self.target = pygame.Rect(0,0,0,0)
+        self.isDead = False
         
         self.weapon.reverse()
 
-    def update(self, collisions, playerRect):
+    def update(self, collisions, player):
+
+        if self.isDead: self.died()
+        if self.pv<=0: self.isDead=True
+
         self.updateWeapon()
 
-        self.playerDistance = self.detection(playerRect)
+        self.playerDistance = self.detection(player.rect)
         self.collisions = collisions
 
         #l=m.sqrt(abs((self.rect.center[0]-self.spawnPoint[0])**2)+abs((self.rect.center[1]-self.spawnPoint[1])**2))
         
-        a=0
         b=self.isReversed
         if self.playerDistance and self.playerDistance < self.detectRange:
-            self.target = playerRect
-            if self.rect.x-playerRect.x > 0: self.isReversed = True
-            elif self.rect.x-playerRect.x < 0: self.isReversed = False
-            a=self.move(playerRect)
+            self.target = player
+            if self.rect.x-player.rect.x > 0: self.isReversed = True
+            elif self.rect.x-player.rect.x < 0: self.isReversed = False
+            self.move(player.rect)
         elif self.rect[:2] != self.spawnPoint:
             self.move(self.spawnPoint)
 
         if b!= self.isReversed: self.reverse()
-
-        return a
     
     def updateWeapon(self):
         if not self.isReversed: a=+12
@@ -64,11 +67,13 @@ class hostileMob(pygame.sprite.Sprite):
     def attack(self):
         if (self.weapon.isRecharging or self.weapon.isAttacking): return
         self.weapon.attack()
-        return self.weapon.damage
+        self.target.pv-=self.weapon.damage+self.atk
 
     def move(self, destination):
-        if self.weapon.rect.colliderect(self.target): 
-            return self.attack()
+        if self.target:
+            if self.weapon.rect.colliderect(self.target.rect): 
+                self.attack()
+                return
         
         if abs(self.rect.x-destination[0]) > self.speed:
             if self.rect.x-destination[0] > 0: self.left()
@@ -99,4 +104,13 @@ class hostileMob(pygame.sprite.Sprite):
         self.rect.x = self.spawnPoint[0]
         self.rect.y = self.spawnPoint[1]
 
-Fighter = hostileMob(1,10,1.5,"data/images/deep_elf_fighter_new.png",gameItems.weapons["sword"],200)
+    def died(self):
+        #self.isDead = True
+        self.target.inv.currentMoney += self.deathWorth
+        self.weapon.kill()
+        self.kill()
+
+hostileMobs = {
+    "fighter": hostileMob(1,10,1.5,"data/images/deep_elf_fighter_new.png",gameItems.weapons["sword"],200, 10),
+    "assassin": hostileMob(2,5,3,"data/images/deep_elf_fighter_new2.png",gameItems.weapons["dagger"],100, 10)
+}
